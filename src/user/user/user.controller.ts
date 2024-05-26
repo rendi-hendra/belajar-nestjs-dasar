@@ -3,6 +3,7 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpException,
   HttpRedirectResponse,
   Inject,
   Param,
@@ -12,6 +13,7 @@ import {
   Redirect,
   Req,
   Res,
+  UseFilters,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
@@ -20,6 +22,7 @@ import { MailService } from '../mail/mail.service';
 import { UserRepository } from '../user-repository/user-repository';
 import { MemberService } from '../member/member.service';
 import { User } from '@prisma/client';
+import { ValidationFilter } from 'src/validation/validation.filter';
 
 @Controller('/api/users')
 export class UserController {
@@ -49,10 +52,20 @@ export class UserController {
 
   @Get('/create')
   async create(
-    @Query('first_name') first_name: string,
-    @Query('last_name') last_name: string,
+    @Query('first_name') firstName: string,
+    @Query('last_name') lastName: string,
   ): Promise<User> {
-    return this.userRepository.save(first_name, last_name);
+    if (!firstName) {
+      throw new HttpException(
+        {
+          code: 400,
+          errors: 'first_name is required',
+        },
+        400,
+      );
+    }
+
+    return this.userRepository.save(firstName, lastName);
   }
 
   @Get('/current/:id')
@@ -97,15 +110,8 @@ export class UserController {
     };
   }
 
-  // @Get('/hello')
-  // async sayHello(
-  //   @Query('first_name') firstName: string,
-  //   @Query('last_name') lastName: string,
-  // ): Promise<string> {
-  //   return `Hello ${firstName} ${lastName}`;
-  // }
-
   @Get('/hello')
+  @UseFilters(ValidationFilter)
   async sayHello(@Query('name') name: string): Promise<string> {
     return this.service.sayHello(name);
   }
