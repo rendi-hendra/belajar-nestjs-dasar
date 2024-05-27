@@ -21,6 +21,7 @@ async function bootstrap() {
   // Global Filters & Global Pipe
   // app.useGlobalFilters(new ValidationFilter());
   // app.useGlobalPipe();
+  // app.useGlobalInterceptors(...)
 
   const configService = app.get(ConfigService);
   await app.listen(configService.get('PORT'));
