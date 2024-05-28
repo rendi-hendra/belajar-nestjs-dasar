@@ -15,7 +15,7 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -34,7 +34,7 @@ import {
 import { ValidationPipe } from 'src/validation/validation.pipe';
 import { TimeInterceptor } from 'src/time/time.interceptor';
 import { Auth } from 'src/auth/auth.decorator';
-import { RoleGuard } from 'src/role/role.guard';
+// import { RoleGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
 
 @Controller('/api/users')
@@ -53,7 +53,7 @@ export class UserController {
   // private service: UserService;
 
   @Get('/current')
-  @UseGuards(RoleGuard)
+  // @UseGuards(RoleGuard)
   @Roles(['admin', 'operator'])
   current(@Auth() user: User): Record<string, any> {
     return {
